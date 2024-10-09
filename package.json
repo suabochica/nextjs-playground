@@ -1,0 +1,29 @@
+{
+  "name": "nextjs-playground",
+  "version": "1.0.0",
+  "description": "Welcome! Our goal is to equip you with the skills you'll need to become a good developer using NextJS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "projects/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suabochica/nextjs-playground",
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "git+https://github.com/suabochica/nextjs-playground/issues"
+    },
+    "homepage": "git+https://github.com/suabochica/nextjs-playground#readme",
+    "devDependencies": {
+      "standard": "17.0.0"
+    },
+    "eslintConfig": {
+      "extends": "./node_modules/standard/eslintrc.json"
+    }
+  }
+}
