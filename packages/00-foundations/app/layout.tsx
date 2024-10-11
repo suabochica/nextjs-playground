@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/app/ui/global.css";
 import { geistSans, geistMono } from "@/app/ui/fonts/fonts";
 
+// export const experimental_ppr = true;
 
 export const metadata: Metadata = {
   title: "Dashboard",
