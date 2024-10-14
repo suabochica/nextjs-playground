@@ -33,7 +33,7 @@ export async function createInvoice(formData: FormData) {
     `;
   } catch (error) {
     return {
-      error: 'Database Error: An error occurred while creating the invoice.'
+      error: `Database Error: An error occurred while creating the invoice ${error}`
     }
   }
 
@@ -58,7 +58,7 @@ export async function updateInvoice(id: string, formData: FormData) {
     `;
   } catch (error) {
     return {
-      error: 'Database Error: An error occurred while updating the invoice.'
+      error: `Database Error: An error occurred while updating the invoice. ${error}`
     }
   }
 
@@ -67,8 +67,6 @@ export async function updateInvoice(id: string, formData: FormData) {
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
-
   try {
     await sql`
       DELETE FROM invoices
@@ -78,7 +76,7 @@ export async function deleteInvoice(id: string) {
 
     return { message: 'Invoice deleted successfully.' };
   } catch (error) {
-    return { error: 'Database Error: An error occurred while deleting the invoice.' }
+    return { error: `Database Error: An error occurred while deleting the invoice. ${error}` }
   }
 
 }

@@ -2,7 +2,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 
-import { geistSans, geistMono, lusitana } from '@/app/ui/fonts/fonts';
+import { geistSans, geistMono } from '@/app/ui/fonts/fonts';
 import { LatestInvoice } from '@/app/lib/definitions';
 import { fetchLatestInvoices } from '@/app/lib/data';
 
