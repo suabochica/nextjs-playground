@@ -32,9 +32,7 @@ export async function createInvoice(formData: FormData) {
       VALUES(${customerId}, ${amountInCents}, ${status}, ${date})
     `;
   } catch (error) {
-    return {
-      error: `Database Error: An error occurred while creating the invoice ${error}`
-    }
+    console.error(`Database Error: An error occurred while creating the invoice ${error}`)
   }
 
   revalidatePath('/dashboard/invoices');
@@ -57,9 +55,7 @@ export async function updateInvoice(id: string, formData: FormData) {
       WHERE id = ${id}
     `;
   } catch (error) {
-    return {
-      error: `Database Error: An error occurred while updating the invoice. ${error}`
-    }
+    console.error(`Database Error: An error occurred while updating the invoice. ${error}`)
   }
 
   revalidatePath('/dashboard/invoices');
@@ -74,9 +70,9 @@ export async function deleteInvoice(id: string) {
     `;
     revalidatePath('/dashboard/invoices');
 
-    return { message: 'Invoice deleted successfully.' };
+    console.warn('Invoice deleted successfully.');
   } catch (error) {
-    return { error: `Database Error: An error occurred while deleting the invoice. ${error}` }
+    console.error(`Database Error: An error occurred while deleting the invoice. ${error}`)
   }
 
 }
