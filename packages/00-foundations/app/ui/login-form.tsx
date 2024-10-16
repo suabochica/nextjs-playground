@@ -13,7 +13,7 @@ import { Button } from '@/app/ui/button';
 import { authenticate } from '@/app/lib/actions';
 
 export default function LoginForm() {
-  const [errorMessage, formAction, isPending] = useFormState(authenticate, undefined)
+  const [errorMessage, formAction] = useFormState(authenticate, undefined)
 
   return (
     <form action={formAction} className="space-y-3">
