@@ -1,9 +1,30 @@
+'use client';
+
+import React from "react";
+
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";	
 import styles from "./page.module.css";
+import { Button } from "./ui/button/button";
+import GitHub from "./ui/button/icons/github";
+
+import { loginWithGitHub, UserProfile } from "../firebase/client";
 
 export default function Home() {
+  const [user, setUser] = React.useState<UserProfile | null>(null);
+
+  const handleClick = (): void => {
+    loginWithGitHub()
+      .then((user: UserProfile) => {
+        setUser(user);
+        console.log(user);
+      })
+      .catch((err: Error) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className={styles.page}>
       <Head>
@@ -13,7 +34,19 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <Image
+            src="/devter-logo.png"
+            alt="Devter logo"
+            height={32}
+            width={32}
+        />
         <h1 className={styles.title}>Devter</h1>
+        <h2>Talk about development with developers</h2>
+
+        <Button onClick={handleClick}>
+          <GitHub fill='#FEFEFE' width={24} height={24}/>
+          Log ing with GitHub
+        </Button>
 
         <div className={styles.ctas}>
           <Link
