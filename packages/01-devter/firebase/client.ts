@@ -1,4 +1,5 @@
-import * as firebase from 'firebase'
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithPopup, GithubAuthProvider, User } from 'firebase/auth'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -11,32 +12,47 @@ const firebaseConfig = {
   measurementId: "G-5E709YJ56V"
 };
 
-firebase.initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
+
+const auth = getAuth();
 
 export interface UserProfile {
-  avatar: string;
-  username: string;
-  url: string;
+  avatar: string | null;
+  username: string | null;
+  email: string | null;
 }
 
-interface GitHubProfile {
-  avatar_url: string;
-  blog: string;
+const mapUserFromFirebaseAuthToUser = (user: User): UserProfile => {
+  const { displayName, email, photoURL } = user;
+
+  return {
+    avatar: photoURL,
+    username: displayName,
+    email,
+  }
 }
 
-export const loginWithGitHub = () => {
-  const githubProvider = new firebase.auth.GithubAuthProvider() 
+export const onAuthStateChange = (onChange: unknown) => {
+  return auth
+    .onAuthStateChanged((user) => {
+      const normalizedUser = user ? mapUserFromFirebaseAuthToUser(user): null; 
 
-  return firebase.auth().signInWithPopup(githubProvider)
-    .then((user: firebase.auth.UserCredential): UserProfile => {
-      const { additionalUserInfo } = user;
-      const { username, profile } = additionalUserInfo as firebase.auth.AdditionalUserInfo & { profile: GitHubProfile };
-      const { avatar_url, blog } = profile;
-
-      return {
-        avatar: avatar_url,
-        username,
-        url: blog
-      }
+      // @ts-expect-error: check onChange type
+      onChange(normalizedUser)
     })
+}
+
+export const loginWithGitHub = async (event: React.SyntheticEvent) => {
+  event.preventDefault();
+
+  const provider = new GithubAuthProvider();
+
+  try {
+    const user = await signInWithPopup(auth, provider);
+    const normalizedUser = user.user
+    return mapUserFromFirebaseAuthToUser(normalizedUser);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }

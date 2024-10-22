@@ -1,22 +1,29 @@
 'use client';
 
-import React from "react";
+import { useState, useEffect } from "react";
 
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";	
-import styles from "./page.module.css";
-import { Button } from "./ui/button/button";
-import GitHub from "./ui/button/icons/github";
 
-import { loginWithGitHub, UserProfile } from "../firebase/client";
+import styles from "./page.module.css";
+
+import Avatar from "./ui/avatar/avatar";
+import { Button } from "./ui/button/button";
+import GitHub from "./ui//icons/github";
+
+import { loginWithGitHub, onAuthStateChange , UserProfile } from "../firebase/client";
 
 export default function Home() {
-  const [user, setUser] = React.useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
 
-  const handleClick = (): void => {
-    loginWithGitHub()
-      .then((user: UserProfile) => {
+  useEffect(() => {
+    onAuthStateChange(setUser); 
+  }, []);
+
+  const handleClick = (event: React.SyntheticEvent): void => {
+    loginWithGitHub(event)
+      .then((user) => {
         setUser(user);
         console.log(user);
       })
@@ -43,10 +50,24 @@ export default function Home() {
         <h1 className={styles.title}>Devter</h1>
         <h2>Talk about development with developers</h2>
 
-        <Button onClick={handleClick}>
-          <GitHub fill='#FEFEFE' width={24} height={24}/>
-          Log ing with GitHub
-        </Button>
+        {
+          user === null && (
+            <Button onClick={handleClick}>
+              <GitHub fill='#FEFEFE' width={24} height={24}/>
+              Log ing with GitHub
+            </Button>
+          )
+        }
+
+        {
+          user && user.avatar && user.username && (
+            <Avatar
+              src={user.avatar}
+              alt={user.username}
+              text={user.username}
+            />
+          )
+        }
 
         <div className={styles.ctas}>
           <Link
