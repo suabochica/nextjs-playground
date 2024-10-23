@@ -9,17 +9,32 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "firebase": "^11.0.0",
+    "firebase": "11.0.0",
     "next": "14.2.15",
     "react": "18",
     "react-dom": "18"
   },
   "devDependencies": {
+    "@eslint/js": "9.13.0",
     "@types/node": "20",
     "@types/react": "18",
     "@types/react-dom": "18",
-    "eslint": "8",
+    "eslint": "8.57.1",
     "eslint-config-next": "14.2.15",
-    "typescript": "5"
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-react": "7.37.2",
+    "globals": "15.11.0",
+    "prettier": "3.3.3",
+    "typescript": "5",
+    "typescript-eslint": "8.11.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "*.{js,ts,css,md}": "prettier --write"
   }
 }

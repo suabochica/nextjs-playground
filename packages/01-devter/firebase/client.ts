@@ -1,5 +1,10 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GithubAuthProvider, User } from 'firebase/auth'
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  signInWithPopup,
+  GithubAuthProvider,
+  User,
+} from "firebase/auth";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -9,7 +14,7 @@ const firebaseConfig = {
   storageBucket: "devter-b77d3.appspot.com",
   messagingSenderId: "405804111382",
   appId: "1:405804111382:web:05de10f00f2583f211c737",
-  measurementId: "G-5E709YJ56V"
+  measurementId: "G-5E709YJ56V",
 };
 
 initializeApp(firebaseConfig);
@@ -29,18 +34,17 @@ const mapUserFromFirebaseAuthToUser = (user: User): UserProfile => {
     avatar: photoURL,
     username: displayName,
     email,
-  }
-}
+  };
+};
 
 export const onAuthStateChange = (onChange: unknown) => {
-  return auth
-    .onAuthStateChanged((user) => {
-      const normalizedUser = user ? mapUserFromFirebaseAuthToUser(user): null; 
+  return auth.onAuthStateChanged((user) => {
+    const normalizedUser = user ? mapUserFromFirebaseAuthToUser(user) : null;
 
-      // @ts-expect-error: check onChange type
-      onChange(normalizedUser)
-    })
-}
+    // @ts-expect-error: check onChange type
+    onChange(normalizedUser);
+  });
+};
 
 export const loginWithGitHub = async (event: React.SyntheticEvent) => {
   event.preventDefault();
@@ -49,10 +53,10 @@ export const loginWithGitHub = async (event: React.SyntheticEvent) => {
 
   try {
     const user = await signInWithPopup(auth, provider);
-    const normalizedUser = user.user
+    const normalizedUser = user.user;
     return mapUserFromFirebaseAuthToUser(normalizedUser);
   } catch (error) {
     console.error(error);
     return null;
   }
-}
+};

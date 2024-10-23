@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 
 import Image from "next/image";
 import Head from "next/head";
-import Link from "next/link";	
+import Link from "next/link";
 
 import styles from "./page.module.css";
 
@@ -12,13 +12,17 @@ import Avatar from "./ui/avatar/avatar";
 import { Button } from "./ui/button/button";
 import GitHub from "./ui//icons/github";
 
-import { loginWithGitHub, onAuthStateChange , UserProfile } from "../firebase/client";
+import {
+  loginWithGitHub,
+  onAuthStateChange,
+  UserProfile,
+} from "../firebase/client";
 
 export default function Home() {
   const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
 
   useEffect(() => {
-    onAuthStateChange(setUser); 
+    onAuthStateChange(setUser);
   }, []);
 
   const handleClick = (event: React.SyntheticEvent): void => {
@@ -37,37 +41,29 @@ export default function Home() {
       <Head>
         <title>devter</title>
         <meta name="description" content="Tweeter for devs" />
-        <link rel="icon" href="/favicon.ico"/> 
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
         <Image
-            src="/devter-logo.png"
-            alt="Devter logo"
-            height={32}
-            width={32}
+          src="/devter-logo.png"
+          alt="Devter logo"
+          height={32}
+          width={32}
         />
         <h1 className={styles.title}>Devter</h1>
         <h2>Talk about development with developers</h2>
 
-        {
-          user === null && (
-            <Button onClick={handleClick}>
-              <GitHub fill='#FEFEFE' width={24} height={24}/>
-              Log ing with GitHub
-            </Button>
-          )
-        }
+        {user === null && (
+          <Button onClick={handleClick}>
+            <GitHub fill="#FEFEFE" width={24} height={24} />
+            Log ing with GitHub
+          </Button>
+        )}
 
-        {
-          user && user.avatar && user.username && (
-            <Avatar
-              src={user.avatar}
-              alt={user.username}
-              text={user.username}
-            />
-          )
-        }
+        {user && user.avatar && user.username && (
+          <Avatar src={user.avatar} alt={user.username} text={user.username} />
+        )}
 
         <div className={styles.ctas}>
           <Link

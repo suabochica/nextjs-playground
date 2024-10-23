@@ -1,10 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";	
-import styles from './page.module.css';
-
+import Link from "next/link";
+import styles from "./page.module.css";
 
 export default function Timeline() {
-  const userName = "@suabochica"
+  const userName = "@suabochica";
 
   return (
     <div className={styles.page}>
@@ -30,5 +29,5 @@ export default function Timeline() {
         </a>
       </footer>
     </div>
-  )
+  );
 }

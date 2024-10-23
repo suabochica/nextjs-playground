@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-export default function GitHub(props: React.SVGProps<SVGSVGElement>) {  
+export default function GitHub(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width={1024}
@@ -16,5 +16,5 @@ export default function GitHub(props: React.SVGProps<SVGSVGElement>) {
         fill={props.fill}
       />
     </svg>
-  )
+  );
 }

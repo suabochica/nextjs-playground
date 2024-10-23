@@ -1,10 +1,8 @@
-DevTer
-======
+# DevTer
 
 Twitter for developers.
 
-🚀 Getting Started
-------------------
+## 🚀 Getting Started
 
 First, run the development server:
 
@@ -24,18 +22,20 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-🔥 Tool Kit
------------
+## 🔥 Tool Kit
 
 - [firebase](https://firebase.google.com), platform to support you throughout your app development journey. Used to authentication with a GitHub account.
 
-🪛 Tools
---------
+## 🪛 Tools
 
 - [svgr](https://react-svgr.com/playground) tool to convert SVG images into React components.
+- [eslint](https://eslint.org/docs/latest/use/getting-started) to lint your code with standard js rules.e
+- [standarjs](https://standardjs.com/), the JavaScript Standard Style.
+- [prettier](https://prettier.io/), to format your code.
 
-📓 Learn More
--------------
+> Warning: No use external packages complementaries from eslint and prettier. This make the format and lint set up a cumbersome.
+
+## 📓 Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
@@ -44,9 +44,27 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-☄️ Deploy on Vercel
---------------------
+Check an explanation wiht the use case for the dependencies management in package.json.
+
+- `dependencies`: Dependencies that need our project to work on produuction.
+- `devDependencies`: Dependencies taht we use in development stage (e.g., linters, types, formatters, etc.)
+- `peerDependencies`: Dependencies that by default require a the project.
+
+## ☄️ Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                      |
+| :------------------------ | :------------------------------------------ |
+| `pnpm install`            | Installs dependencies                       |
+| `pnpm run dev`            | Starts local dev server at `localhost:3000` |
+| `pnpm run build`          | Build your production site to `./dist/`     |
+| `pnpm run lint`           | Run the next lin in the project             |
+| `pnpx prettier . --check` | Check the format errors                     |
+| `pnpx prettier . --write` | write the format errors                     |
