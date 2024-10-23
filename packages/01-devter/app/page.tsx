@@ -2,21 +2,22 @@
 
 import { useState, useEffect } from "react";
 
-import Image from "next/image";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 
 import styles from "./page.module.css";
 
-import Avatar from "./ui/avatar/avatar";
-import { Button } from "./ui/button/button";
-import GitHub from "./ui//icons/github";
+import Avatar from "@/app/ui/avatar/avatar";
+import { Button } from "@/app/ui/button/button";
+import GitHub from "@/app/ui//icons/github";
 
 import {
   loginWithGitHub,
   onAuthStateChange,
   UserProfile,
-} from "../firebase/client";
+} from "@/firebase/client";
+import Logo from "./ui/icons/logo";
 
 export default function Home() {
   const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
@@ -45,12 +46,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Image
-          src="/devter-logo.png"
-          alt="Devter logo"
-          height={32}
-          width={32}
-        />
+        <Logo className={styles.logo} />  
         <h1 className={styles.title}>Devter</h1>
         <h2>Talk about development with developers</h2>
 

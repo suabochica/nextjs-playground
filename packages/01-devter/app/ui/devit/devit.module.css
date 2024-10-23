@@ -1,0 +1,15 @@
+.article {
+  border-bottom: 2px solid #eaf7ff; 
+  display: flex;
+  padding: 10px 16px;
+}
+
+.container {
+  padding-right: 10px;
+}
+
+.paragraph {
+  margin: 0;
+  line-height: 1.3125;
+} 
+

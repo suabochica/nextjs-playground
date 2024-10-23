@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import styles from "./avatar.module.css";
+import styles from "@/app/ui/avatar/avatar.module.css";
 
 interface AvatarProps {
   alt: string;
@@ -11,7 +11,14 @@ interface AvatarProps {
 export default function Avatar({ alt, src, text }: AvatarProps) {
   return (
     <div className={styles.container}>
-      <Image className={styles.avatar} alt={alt} src={src} title={text} />
+      <Image
+        className={styles.avatar}
+        alt={alt}
+        src={src}
+        title={text}
+        width={32}
+        height={32}
+      />
       {text && <strong>{text}</strong>}
     </div>
   );
