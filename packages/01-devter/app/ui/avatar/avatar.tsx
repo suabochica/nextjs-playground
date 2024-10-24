@@ -19,7 +19,7 @@ export default function Avatar({ alt, src, text }: AvatarProps) {
         width={32}
         height={32}
       />
-      {text && <strong>{text}</strong>}
+      {/* {text && <strong>{text}</strong>} */}
     </div>
   );
 }

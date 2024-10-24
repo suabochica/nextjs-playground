@@ -25,15 +25,17 @@ export interface UserProfile {
   avatar: string | null;
   username: string | null;
   email: string | null;
+  uid: string;
 }
 
 const mapUserFromFirebaseAuthToUser = (user: User): UserProfile => {
-  const { displayName, email, photoURL } = user;
+  const { displayName, email, photoURL, uid } = user;
 
   return {
     avatar: photoURL,
     username: displayName,
     email,
+    uid
   };
 };
 
