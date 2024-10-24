@@ -1,100 +1,68 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import styles from "./page.module.css";
+import { loginWithGitHub } from "@/firebase/client";
 
-import Avatar from "@/app/ui/avatar/avatar";
+import styles from "@/app/page.module.css";
+
 import { Button } from "@/app/ui/button/button";
-import GitHub from "@/app/ui//icons/github";
 
-import {
-  loginWithGitHub,
-  onAuthStateChange,
-  UserProfile,
-} from "@/firebase/client";
-import Logo from "./ui/icons/logo";
+import GitHubIcon from "@/app/ui//icons/github";
+import Logo from "@/app/ui/icons/logo";
+
+import useUser, { USER_STATES } from "@/app/lib/useUser";
 
 export default function Home() {
-  const [user, setUser] = useState<UserProfile | null | undefined>(undefined);
+  const user = useUser();
+  const router = useRouter(); 
 
   useEffect(() => {
-    onAuthStateChange(setUser);
-  }, []);
+    if (user !== null)  {
+      router.replace("/home");  
+    }
+  }, [user, router]);
 
   const handleClick = (event: React.SyntheticEvent): void => {
     loginWithGitHub(event)
-      .then((user) => {
-        setUser(user);
-        console.log(user);
-      })
-      .catch((err: Error) => {
+     .catch((err: Error) => {
         console.log(err);
       });
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.container}>
       <Head>
         <title>devter</title>
         <meta name="description" content="Tweeter for devs" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <Logo className={styles.logo} />  
-        <h1 className={styles.title}>Devter</h1>
-        <h2>Talk about development with developers</h2>
+      <section className={styles.main}>
+        <Logo className={styles.logo} fill="#0070f3" width={120} height={120}/>  
+        <h1 className={styles.h1}>Devter</h1>
+        <h2 className={styles.h2}>Talk about development with developers</h2>
 
-        {user === null && (
-          <Button onClick={handleClick}>
-            <GitHub fill="#FEFEFE" width={24} height={24} />
-            Log ing with GitHub
-          </Button>
-        )}
+        <div className={styles.mt}>
+          {user === USER_STATES.NOT_LOGGED && (
+            <Button onClick={handleClick}>
+              <GitHubIcon fill="#FEFEFE" width={24} height={24} />
+              Log in with GitHub
+            </Button>
+          )}
 
-        {user && user.avatar && user.username && (
-          <Avatar src={user.avatar} alt={user.username} text={user.username} />
-        )}
-
-        <div className={styles.ctas}>
-          <Link
-            className={styles.primary}
-            href="/timeline"
-            rel="noopener noreferrer"
-          >
-            Timeline
-          </Link>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+          {user === USER_STATES.NOT_KNOWN && (
+            <div>
+              <p>Loading...</p>
+            </div>  
+          )}
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      </section>
     </div>
   );
 }

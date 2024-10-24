@@ -14,11 +14,12 @@ export default function Devit ({id, avatar, username, message, name}: DevitProps
   return (
     <>
     <article key={id} className={styles.article}>
-      <div className="container">
+      <div className={styles.container}>
         <Avatar alt={username} src={avatar} text={name}/>
       </div>
       <div>
-        <p className="paragraph">{message}</p>
+        <strong className={styles.strong}>{username}</strong>
+        <p className={styles.paragraph}>{message}</p>
       </div>
     </article>
     </>
