@@ -6,6 +6,7 @@ import {
   User,
 } from "firebase/auth";
 import { addDoc, collection, query, orderBy, getDocs, getFirestore } from "firebase/firestore";
+import { ref, getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -18,9 +19,10 @@ const firebaseConfig = {
   measurementId: "G-5E709YJ56V",
 };
 
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 const db = getFirestore();
+const storage = getStorage(app);
 const auth = getAuth();
 
 export type UserProfile = {
@@ -95,4 +97,12 @@ export const fetchLatestDevits = async () => {
       createdAt: +createdAt.toDate(),
     }
   })
+}
+
+export const uploadImage = async (file: File) => {
+  const storageRef = ref(storage, `images/${file.name}`);
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);  
+
+  return downloadURL;
 }

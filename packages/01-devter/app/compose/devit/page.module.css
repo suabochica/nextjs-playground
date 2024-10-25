@@ -1,3 +1,17 @@
+.form {
+  margin: 10px
+}
+
+.textareaDragOver {
+  border: 3px dashed #09f;
+  padding: 16px;
+  resize: none;
+  font-size: 20px;
+  outline: 0;
+  min-height: 216px;
+  width: 100%;
+}
+
 .textarea {
   border: 0;
   padding: 16px;
@@ -10,4 +24,27 @@
 
 .container {
   padding: 16px;
+}
+
+.imageSection {
+  position: relative;
+}
+
+.image {
+  border-radius: 16px;  
+  height: auto;
+  width: 100%;  
+}
+
+.imageButton {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  border: 0;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px 24px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
 }

@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getDownloadURL } from "firebase/storage";
 
 import { Button } from "@/app/ui/button/button";
 
 import styles from "@/app/compose/devit/page.module.css";
 
-import { addDevit } from "@/firebase/client";
+import { addDevit, uploadImage } from "@/firebase/client";
 import useUser from "@/app/lib/useUser";
+
 
 const COMPOSE_STATES = {
   USER_NOT_KNOWN: 0,
@@ -17,13 +19,29 @@ const COMPOSE_STATES = {
   ERROR: -1
 }
 
+const DRAG_IMAGE_STATES = {
+  ERROR: -1,
+  NONE: 0,
+  DRAG_OVER: 1,
+  UPLOADING: 2,
+  COMPLETE: 3
+}
+
 export default function ComposeDevit() {
   const user = useUser();
   const router = useRouter(); 
   const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN);
   const [message, setMessage] = useState("");
 
-  console.log(user)
+  const [drag, setDrag] = useState(DRAG_IMAGE_STATES.NONE);
+  const [downloadURL, setDownloadURL] = useState("");
+  const [imgURL, setImgURL] = useState("");
+
+  useEffect(() => {
+    if (downloadURL) {
+      setImgURL(downloadURL);
+    }
+  }, [downloadURL])
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
@@ -54,10 +72,51 @@ export default function ComposeDevit() {
 
   const isButtonDisabled = message.length === 0 || status === COMPOSE_STATES.LOADING; 
 
+  const handleDragOver = (event: React.DragEvent<HTMLTextAreaElement>): void => {
+    event.preventDefault();
+    setDrag(DRAG_IMAGE_STATES.DRAG_OVER);
+  } 
+
+  const handleDragEnter = (event: React.DragEvent<HTMLTextAreaElement>): void => {
+    event.preventDefault();
+    setDrag(DRAG_IMAGE_STATES.DRAG_OVER);
+  }
+
+  const handleDragLeave = (event: React.DragEvent<HTMLTextAreaElement>): void => {
+    event.preventDefault();
+    setDrag(DRAG_IMAGE_STATES.NONE);
+  }
+
+  const handleDrop = async (event: React.DragEvent<HTMLTextAreaElement>) => {
+    event.preventDefault();
+    setDrag(DRAG_IMAGE_STATES.NONE);
+
+    const file = event.dataTransfer.files[0];
+    const url = await uploadImage(file);
+
+    setDownloadURL(url);
+  }
+
   return(
     <>
-      <form action="" onSubmit={handleSubmit}>
-        <textarea className={styles.textarea} placeholder="¿Qué esta pasando?" onChange={handleChange}></textarea>
+      <form className={styles.form} action="" onSubmit={handleSubmit}>
+        <textarea 
+          className={ drag === DRAG_IMAGE_STATES.DRAG_OVER ? styles.textareaDragOver: styles.textarea }
+          placeholder="¿Qué esta pasando?"
+          onChange={handleChange}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave} 
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          value={message}
+          >
+        </textarea>
+        { imgURL && 
+          <section className={styles.imageSection}>
+            <img className={styles.image} src={imgURL} alt="image" />
+            <button className={styles.imageButton} onClick={() => setImgURL("")}>X</button>
+          </section>
+        }
         <div className="container">
           <Button disabled={isButtonDisabled}>Devitear</Button>
         </div>
