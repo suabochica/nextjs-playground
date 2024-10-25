@@ -5,7 +5,7 @@ import {
   GithubAuthProvider,
   User,
 } from "firebase/auth";
-import { addDoc, collection, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, query, orderBy, getDocs, getFirestore } from "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -81,21 +81,18 @@ export const addDevit = async ({ avatar, content, uid, userName}: UserProfile) =
 }
 
 export const fetchLatestDevits = async () => {
-  const { docs } = await getDocs(collection(db, "devits"));
+  const devitsQuery = query(collection(db, "devits"), orderBy("createdAt", "desc"));
+  const { docs } = await getDocs(devitsQuery);
 
   return docs.map((doc) => {
     const data = doc.data()
     const id = doc.id
     const { createdAt } = data
-    console.log(createdAt)
-
-    const date = new Date(createdAt.seconds * 1000)
-    const normalizedCreatedAt = new Intl.DateTimeFormat("es-ES").format(date)
 
     return {
       ...data,
       id,
-      createdAt: normalizedCreatedAt,
+      createdAt: +createdAt.toDate(),
     }
   })
 }
