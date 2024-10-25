@@ -32,6 +32,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - [eslint](https://eslint.org/docs/latest/use/getting-started) to lint your code with standard js rules.e
 - [standarjs](https://standardjs.com/), the JavaScript Standard Style.
 - [prettier](https://prettier.io/), to format your code.
+- [DateTimeFormat](https://prettier.io/), to format your dates according you region.
 
 > Warning: No use external packages complementaries from eslint and prettier. This make the format and lint set up a cumbersome.
 
@@ -49,6 +50,11 @@ Check an explanation wiht the use case for the dependencies management in packag
 - `dependencies`: Dependencies that need our project to work on produuction.
 - `devDependencies`: Dependencies taht we use in development stage (e.g., linters, types, formatters, etc.)
 - `peerDependencies`: Dependencies that by default require a the project.
+
+Firebase offers youu 2 database type:
+
+1. **Firestore**, to handle *high* frequent data change in database, increasing complexity in the queries.
+2. **Realtime**, to handle frequent *low* data change in database, keeping data manipulation simple.
 
 ## ☄️ Deploy on Vercel
 

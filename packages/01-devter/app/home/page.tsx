@@ -15,22 +15,18 @@ import SearchIcon from '@/app/ui/icons/search';
 
 import useUser from "@/app/lib/useUser";
 
+import { fetchLatestDevits } from '@/firebase/client';
+
 export default function Home() {
   const [timeline, setTimeline] = useState([]); 
   const user = useUser()
 
   useEffect(() => {
+
     if (user) {
-      const fetchTimeline = async () => {
-        const response = await fetch("/api/statuses");
-        const formattedResponse = await response.json();
-        const { data } = formattedResponse;
-
-        setTimeline(data);
-      }
-
-      fetchTimeline();
-    }
+      // @ts-expect-error: check the setTimeline type
+      fetchLatestDevits().then(setTimeline);
+    } 
   }, [user]);  
 
   console.log(":rocket", timeline);
@@ -48,16 +44,18 @@ export default function Home() {
       <section className={styles.section}>
         { 
           timeline && timeline.map((devit) => {
-            const { id, avatar, username, message, name } = devit;  
+            const { id, avatar, userName, content, name, uid, createdAt } = devit;  
 
             return (
               <Devit
                 avatar={avatar}
                 id={id} 
                 key={id}
-                message={message}
+                content={content}
                 name={name} 
-                username={username}
+                userName={userName}
+                uid={uid}
+                createdAt={createdAt}
               />
             )
           })

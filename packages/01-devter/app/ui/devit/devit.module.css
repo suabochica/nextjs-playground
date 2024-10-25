@@ -13,3 +13,7 @@
   line-height: 1.3125;
 } 
 
+.date {
+  color : #555;
+  font-size: 12px;
+}
