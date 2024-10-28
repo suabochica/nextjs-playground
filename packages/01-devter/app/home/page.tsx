@@ -44,12 +44,13 @@ export default function Home() {
       <section className={styles.section}>
         { 
           timeline && timeline.map((devit) => {
-            const { id, avatar, userName, content, name, uid, createdAt } = devit;  
+            const { id, avatar, userName, content, name, image, uid, createdAt } = devit;  
 
             return (
               <Devit
                 avatar={avatar}
                 id={id} 
+                image={image} 
                 key={id}
                 content={content}
                 name={name} 

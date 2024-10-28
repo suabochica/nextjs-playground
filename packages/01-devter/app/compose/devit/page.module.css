@@ -48,3 +48,13 @@
   right: 16px;
   top: 16px;
 }
+
+.formSection {
+  display: flex;
+  align-items: flex-start;
+}
+
+.avatarSection {
+  padding-top: 20px;
+  padding-left: 10px;
+}

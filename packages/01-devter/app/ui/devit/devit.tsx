@@ -7,12 +7,14 @@ type DevitProps = {
   content: string
   createdAt: string
   id: string
+  image?: string
   name: string  
   uid: string  
   userName: string
 }
 
-export default function Devit ({id, avatar, userName, content, createdAt, name, uid}: DevitProps  ) { 
+export default function Devit ({id, avatar, image, userName, content, createdAt, name, uid}: DevitProps  ) { 
+  console.log("🚀 uid", uid);
   const timeAgo = useTimeAgo(+createdAt);
 
   return (
@@ -26,6 +28,7 @@ export default function Devit ({id, avatar, userName, content, createdAt, name, 
           <strong>{userName}</strong> · <span className={styles.date}>{timeAgo}</span>
         </header>
         <p className={styles.paragraph}>{content}</p>
+        {image && <img className={styles.img} src={image}/>}
       </section>
     </article>
     </>

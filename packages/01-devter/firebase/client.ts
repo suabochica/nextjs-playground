@@ -31,6 +31,7 @@ export type UserProfile = {
   userName: string | null;
   email: string | null;
   content?: string | null;
+  image?: string;
   uid: string;
 }
 
@@ -70,7 +71,7 @@ export const loginWithGitHub = async (event: React.SyntheticEvent) => {
   }
 };
 
-export const addDevit = async ({ avatar, content, uid, userName}: UserProfile) => {
+export const addDevit = async ({ avatar, content, image, uid, userName}: UserProfile) => {
   return await addDoc(collection(db, "devits"), {
     avatar,
     content,
@@ -79,6 +80,7 @@ export const addDevit = async ({ avatar, content, uid, userName}: UserProfile) =
     createdAt: new Date(),
     likesCount: 0,
     sharedCount: 0,
+    image
   });
 }
 

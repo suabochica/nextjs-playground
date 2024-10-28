@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getDownloadURL } from "firebase/storage";
 
 import { Button } from "@/app/ui/button/button";
 
 import styles from "@/app/compose/devit/page.module.css";
 
 import { addDevit, uploadImage } from "@/firebase/client";
+
 import useUser from "@/app/lib/useUser";
+import Avatar from "@/app/ui/avatar/avatar";
 
 
 const COMPOSE_STATES = {
@@ -58,6 +59,7 @@ export default function ComposeDevit() {
     addDevit({
       avatar,
       content: message,
+      image: imgURL,
       uid,
       userName: userName,
       name
@@ -99,28 +101,35 @@ export default function ComposeDevit() {
 
   return(
     <>
-      <form className={styles.form} action="" onSubmit={handleSubmit}>
-        <textarea 
-          className={ drag === DRAG_IMAGE_STATES.DRAG_OVER ? styles.textareaDragOver: styles.textarea }
-          placeholder="¿Qué esta pasando?"
-          onChange={handleChange}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave} 
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          value={message}
-          >
-        </textarea>
-        { imgURL && 
-          <section className={styles.imageSection}>
-            <img className={styles.image} src={imgURL} alt="image" />
-            <button className={styles.imageButton} onClick={() => setImgURL("")}>X</button>
+      <section className={styles.formSection}>
+        { user && 
+          <section className={styles.avatarSection}>
+            {typeof user.avatar === 'string' && typeof user.userName === 'string' && <Avatar src={user.avatar} alt={user.userName}/>}
           </section>
         }
-        <div className="container">
-          <Button disabled={isButtonDisabled}>Devitear</Button>
-        </div>
-      </form>
+        <form className={styles.form} action="" onSubmit={handleSubmit}>
+          <textarea 
+            className={ drag === DRAG_IMAGE_STATES.DRAG_OVER ? styles.textareaDragOver: styles.textarea }
+            placeholder="¿Qué esta pasando?"
+            onChange={handleChange}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave} 
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            value={message}
+            >
+          </textarea>
+          { imgURL && 
+            <section className={styles.imageSection}>
+              <img className={styles.image} src={imgURL} alt="image" />
+              <button className={styles.imageButton} onClick={() => setImgURL("")}>X</button>
+            </section>
+          }
+          <div className="container">
+            <Button disabled={isButtonDisabled}>Devitear</Button>
+          </div>
+        </form>
+      </section>
     </>
   )
 }
