@@ -16,7 +16,7 @@ import Logo from "@/app/ui/icons/logo";
 
 import useUser, { USER_STATES } from "@/app/lib/useUser";
 
-export default function Home() {
+export default function HomePage() {
   const user = useUser();
   const router = useRouter(); 
 

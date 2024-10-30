@@ -17,7 +17,7 @@ import useUser from "@/app/lib/useUser";
 
 import { fetchLatestDevits } from '@/firebase/client';
 
-export default function Home() {
+export default function HomePage() {
   const [timeline, setTimeline] = useState([]); 
   const user = useUser()
 

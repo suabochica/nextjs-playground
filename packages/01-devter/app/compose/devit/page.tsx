@@ -28,7 +28,7 @@ const DRAG_IMAGE_STATES = {
   COMPLETE: 3
 }
 
-export default function ComposeDevit() {
+export default function ComposeDevitPage() {
   const user = useUser();
   const router = useRouter(); 
   const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN);
