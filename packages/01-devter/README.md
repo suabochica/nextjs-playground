@@ -30,7 +30,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 - [svgr](https://react-svgr.com/playground) tool to convert SVG images into React components.
 - [eslint](https://eslint.org/docs/latest/use/getting-started) to lint your code with standard js rules.e
-- [standarjs](https://standardjs.com/), the JavaScript Standard Style.
+- [standardjs](https://standardjs.com/), the JavaScript Standard Style.
 - [prettier](https://prettier.io/), to format your code.
 - [DateTimeFormat](https://prettier.io/), to format your dates according you region.
 
@@ -45,13 +45,13 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Check an explanation wiht the use case for the dependencies management in package.json.
+Check an explanation with the use case for the dependencies management in package.json.
 
-- `dependencies`: Dependencies that need our project to work on produuction.
-- `devDependencies`: Dependencies taht we use in development stage (e.g., linters, types, formatters, etc.)
+- `dependencies`: Dependencies that need our project to work on production.
+- `devDependencies`: Dependencies that we use in development stage (e.g., linters, types, formatters, etc.)
 - `peerDependencies`: Dependencies that by default require a the project.
 
-Firebase offers youu 2 database type:
+Firebase offers you 2 database type:
 
 1. **Firestore**, to handle *high* frequent data change in database, increasing complexity in the queries.
 2. **Realtime**, to handle frequent *low* data change in database, keeping data manipulation simple.

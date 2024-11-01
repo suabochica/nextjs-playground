@@ -1,5 +1,8 @@
+import Image from "next/image";
+
 import Avatar from "@/app/ui/avatar/avatar";
 import styles from "@/app/ui/devit/devit.module.css";
+
 import useTimeAgo from "@/app/lib/useTimeAgo";
 import useDateTimeFormat from "@/app/lib/useTimeAgo";
 
@@ -30,7 +33,7 @@ export default function Devit ({id, avatar, image, userName, content, createdAt,
           <strong>{userName}</strong> · <time className={styles.date} title={createdAtFormatted}>{timeAgo}</time>
         </header>
         <p className={styles.paragraph}>{content}</p>
-        {image && <img className={styles.img} src={image}/>}
+        {image && <Image className={styles.img} src={image} alt="Devit"/>}
       </section>
     </article>
     </>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { Button } from "@/app/ui/button/button";
 
@@ -121,7 +122,7 @@ export default function ComposeDevitPage() {
           </textarea>
           { imgURL && 
             <section className={styles.imageSection}>
-              <img className={styles.image} src={imgURL} alt="image" />
+              <Image className={styles.image} src={imgURL} alt="image" />
               <button className={styles.imageButton} onClick={() => setImgURL("")}>X</button>
             </section>
           }
