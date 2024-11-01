@@ -2,9 +2,14 @@ const admin = require("firebase-admin");
 
 const serviceAccount = require("@/firebase/firebase-keys.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://devter-b77d3-default-rtdb.firebaseio.com"
-});
+
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://devter-b77d3-default-rtdb.firebaseio.com"
+  });
+} catch (error) {
+  console.log("ln#12", error);
+}
 
 export const firestore = admin.firestore();

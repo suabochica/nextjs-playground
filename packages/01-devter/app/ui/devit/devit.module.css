@@ -1,7 +1,12 @@
 .article {
-  border-bottom: 2px solid #eaf7ff; 
+  border-bottom: 2px solid #eaf7ff;
   display: flex;
   padding: 10px 16px;
+}
+
+.article:hover {
+  background: #f5f8fa;
+  cursor: pointer;
 }
 
 .container {
@@ -11,10 +16,10 @@
 .paragraph {
   margin: 0;
   line-height: 1.3125;
-} 
+}
 
 .date {
-  color : #555;
+  color: #555;
   font-size: 12px;
 }
 
@@ -23,4 +28,14 @@
   height: auto;
   width: 100%;
   margin-top: 8px;
+}
+
+.link {
+  color: --var(--primary);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
