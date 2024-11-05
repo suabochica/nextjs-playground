@@ -10,7 +10,7 @@ import styles from "@/app/ui/devit/devit.module.css";
 import useTimeAgo from "@/app/lib/useTimeAgo";
 import useDateTimeFormat from "@/app/lib/useTimeAgo";
 
-type DevitProps = {
+export type DevitProps = {
   avatar: string
   content: string
   createdAt: string

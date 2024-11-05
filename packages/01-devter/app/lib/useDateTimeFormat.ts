@@ -9,7 +9,7 @@ interface DateTimeFormatOptions {
 
 export default function useDateTimeFormat(timestamp: number): string {
   const date = new Date(timestamp);
-  const language = navigator.language || 'es-ES';
+  const language = 'es-ES';
 
   const options: DateTimeFormatOptions = {
     year: 'numeric',
