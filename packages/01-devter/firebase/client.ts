@@ -84,6 +84,25 @@ export const addDevit = async ({ avatar, content, image, uid, userName}: UserPro
   });
 }
 
+export const fetchDevitById = async (id: string) => {
+  const devitQuery = query(collection(db, "devits"));
+  const { docs } = await getDocs(devitQuery);
+
+  return docs
+    .filter((doc) => doc.id === id)
+    .map((doc) => {
+      const data = doc.data();
+      const id = doc.id;
+      const { createdAt } = data;
+
+      return {
+        ...data,
+        id,
+        createdAt: +createdAt.toDate(),
+      };
+    })
+}
+
 export const fetchLatestDevits = async () => {
   const devitsQuery = query(collection(db, "devits"), orderBy("createdAt", "desc"));
   const { docs } = await getDocs(devitsQuery);

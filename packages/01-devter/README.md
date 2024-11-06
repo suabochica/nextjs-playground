@@ -30,11 +30,11 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 - [svgr](https://react-svgr.com/playground) tool to convert SVG images into React components.
 - [eslint](https://eslint.org/docs/latest/use/getting-started) to lint your code with standard js rules.e
-- [standardjs](https://standardjs.com/), the JavaScript Standard Style.
+- [standard js](https://standardjs.com/), the JavaScript Standard Style.
 - [prettier](https://prettier.io/), to format your code.
 - [DateTimeFormat](https://prettier.io/), to format your dates according you region.
 
-> Warning: No use external packages complementaries from eslint and prettier. This make the format and lint set up a cumbersome.
+> Warning: No use external packages complementarily from eslint and prettier. This make the format and lint set up a cumbersome.
 
 ## 📓 Learn More
 

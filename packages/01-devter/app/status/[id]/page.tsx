@@ -1,39 +1,19 @@
-import GetServerSidePropsContext  from 'next';
+import { Suspense } from 'react';
 
-import Devit from "@/app/ui/devit/devit";
-import { DevitProps } from "@/app/ui/devit/devit";  
+import Devit from "@/app/ui/devit/devit"
+import { fetchDevitById } from "@/firebase/client"
 
+export default async function DevitPage({ params }: {params: { id: string }}) {
+  const id = params.id
+  const data = await fetchDevitById(id)
+  const devit = data[0]
 
-interface DevitPageInitialProps {
-  id: string;
-  [key: string]: any;
-}
-
-export default function DevitPage(props: DevitProps) {
-  console.log('DevitPage', props.id);
   return (
-    <div>
-     <Devit {...props} />  
-    </div>
-  );
-}
-
-DevitPage.getInitialProps = async (context: GetServerSidePropsContext): Promise<DevitPageInitialProps> => {
-  const { query, res } = context;
-  const { id } = query;
-
-  console.log('getInitialProps', id);
-
-  const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`);
-
-  if (apiResponse.ok) {
-    return apiResponse.json();
-  }
-
-  if (res) {
-    res.writeHead(301, { Location: '/home' });
-    res.end();  
-  }
-
-  return { id: id as string };
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        {/* @ts-expect-error: check devit type */}
+        <Devit {...devit} />
+      </Suspense>
+    </>
+  )
 }

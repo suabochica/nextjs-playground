@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from 'next/link'; 
-import { useRouter } from "next/compat/router";
+import { useRouter } from "next/navigation";
 
 import Avatar from "@/app/ui/avatar/avatar";
 import styles from "@/app/ui/devit/devit.module.css";
@@ -17,13 +17,12 @@ export type DevitProps = {
   id: string
   image?: string
   name: string  
-  uid: string  
+  uid?: string  
   userName: string
 }
 
 
-export default function Devit ({id, avatar, image, userName, content, createdAt, name, uid}: DevitProps  ) { 
-  console.log("🚀 uid", uid);
+export default function Devit ({id, avatar, image, userName, content, createdAt, name}: DevitProps  ) { 
   const timeAgo = useTimeAgo(+createdAt);
   const createdAtFormatted = useDateTimeFormat(+createdAt);
   const router = useRouter()
@@ -50,7 +49,7 @@ export default function Devit ({id, avatar, image, userName, content, createdAt,
           </Link>
         </header>
         <p className={styles.paragraph}>{content}</p>
-        {image && <Image className={styles.img} src={image} alt="Devit"/>}
+        {image && <Image className={styles.img} src={image} alt="Devit" width={64} height={64}/>}
       </section>
     </article>
     </>

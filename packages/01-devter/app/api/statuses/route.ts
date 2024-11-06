@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 import { timeline } from "@/app/lib/placeholder-data";
 
-export async function GET(request: NextRequest) {
-  console.log('ln#6 test', request);
+export async function GET() {
   return NextResponse.json(
     { 
       headers: { "Content-Type": "application/json" },

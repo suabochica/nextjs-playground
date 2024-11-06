@@ -122,7 +122,7 @@ export default function ComposeDevitPage() {
           </textarea>
           { imgURL && 
             <section className={styles.imageSection}>
-              <Image className={styles.image} src={imgURL} alt="image" />
+              <Image className={styles.image} src={imgURL} alt="image" width={64} height={64}/>
               <button className={styles.imageButton} onClick={() => setImgURL("")}>X</button>
             </section>
           }

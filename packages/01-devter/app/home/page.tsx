@@ -29,8 +29,6 @@ export default function HomePage() {
     } 
   }, [user]);  
 
-  console.log(":rocket", timeline);
-
   return (
     <>
       <Head>

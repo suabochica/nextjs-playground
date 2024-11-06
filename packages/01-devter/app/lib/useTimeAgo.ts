@@ -23,13 +23,13 @@ const getDateDiffs = (timestamp: number) => {
 export default function useTimeAgo(timestamp: number) {
   const [timeAgo, setTimeAgo] = useState(() => getDateDiffs(timestamp))
 
-  useEffect (() => { 
+  useEffect(() => {
     const interval = setInterval(() => {
       const newTimeAgo = getDateDiffs(timestamp)
       setTimeAgo(newTimeAgo)
     }, 5000)
 
-    return () => clearInterval(interval)  
+    return () => clearInterval(interval)
   }, [timestamp])
 
   const rtf = new Intl.RelativeTimeFormat('es', { style: 'long' })
