@@ -24,7 +24,7 @@ export default function useUser(): UserProfile | undefined {
     if (user === USER_STATES.NOT_LOGGED) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, router]);
 
   return user;
 }

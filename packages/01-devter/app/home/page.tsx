@@ -15,18 +15,22 @@ import SearchIcon from '@/app/ui/icons/search';
 
 import useUser from "@/app/lib/useUser";
 
-import { fetchLatestDevits } from '@/firebase/client';
+import { listenLatestDevits } from '@/firebase/client';
 
 export default function HomePage() {
   const [timeline, setTimeline] = useState([]); 
   const user = useUser()
 
   useEffect(() => {
+    // @ts-expect-error: unsubscribe is any
+    let unsubscribe;
 
     if (user) {
-      // @ts-expect-error: check the setTimeline type
-      fetchLatestDevits().then(setTimeline);
+      unsubscribe = listenLatestDevits(setTimeline)
     } 
+
+    // @ts-expect-error: unsubscribe is any
+    return () => unsubscribe && unsubscribe()
   }, [user]);  
 
   return (

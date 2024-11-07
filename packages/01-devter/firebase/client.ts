@@ -5,8 +5,20 @@ import {
   GithubAuthProvider,
   User,
 } from "firebase/auth";
-import { addDoc, collection, query, orderBy, getDocs, getFirestore } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  onSnapshot,
+  query,
+  QueryDocumentSnapshot
+} from "firebase/firestore";
 import { ref, getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
+
+import { DevitProps } from "@/app/ui/devit/devit";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -45,6 +57,20 @@ const mapUserFromFirebaseAuthToUser = (user: User): UserProfile => {
     uid
   };
 };
+
+
+const mapDevitFromFirebaseToDevitObject = (doc: QueryDocumentSnapshot): DevitProps => {
+  const data = doc.data();
+  const id = doc.id;
+  const { createdAt } = data;
+
+  //@ts-expect-error: check data type
+  return {
+    ...data,
+    id,
+    createdAt: +createdAt.toDate(),
+  } as DevitProps;
+}
 
 export const onAuthStateChange = (onChange: unknown) => {
   return auth.onAuthStateChanged((user) => {
@@ -90,34 +116,36 @@ export const fetchDevitById = async (id: string) => {
 
   return docs
     .filter((doc) => doc.id === id)
-    .map((doc) => {
-      const data = doc.data();
-      const id = doc.id;
-      const { createdAt } = data;
+    .map(mapDevitFromFirebaseToDevitObject)
+}
 
-      return {
-        ...data,
-        id,
-        createdAt: +createdAt.toDate(),
-      };
+// @ts-expect-error: check callback type
+export const listenLatestDevits = async (callback) => {
+  try {
+    const devitsQuery = query(
+      collection(db, "devits"),
+      orderBy("createdAt", "desc"),
+      limit(20),
+    );
+
+    const snapshot = await getDocs(devitsQuery);
+    const initialDevits = snapshot.docs.map(mapDevitFromFirebaseToDevitObject);
+    callback(initialDevits);
+
+    return onSnapshot(devitsQuery, (snapshot) => {
+      const newDevits = snapshot.docs.map(mapDevitFromFirebaseToDevitObject);
+      callback(newDevits);
     })
+  } catch (error) {
+    console.error("Error fetching devits:", error);
+  }
 }
 
 export const fetchLatestDevits = async () => {
   const devitsQuery = query(collection(db, "devits"), orderBy("createdAt", "desc"));
   const { docs } = await getDocs(devitsQuery);
 
-  return docs.map((doc) => {
-    const data = doc.data()
-    const id = doc.id
-    const { createdAt } = data
-
-    return {
-      ...data,
-      id,
-      createdAt: +createdAt.toDate(),
-    }
-  })
+  return docs.map(mapDevitFromFirebaseToDevitObject);
 }
 
 export const uploadImage = async (file: File) => {

@@ -11,7 +11,6 @@ export default async function DevitPage({ params }: {params: { id: string }}) {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-        {/* @ts-expect-error: check devit type */}
         <Devit {...devit} />
       </Suspense>
     </>
