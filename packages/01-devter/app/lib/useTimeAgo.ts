@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react"
+import { formatDate } from "@/app/lib/useDateTimeFormat";
+
+
+const isRelativeTuneFormat = typeof Intl !== 'undefined' && Intl.RelativeTimeFormat;
 
 const DATE_UNITS = [
   ['day', 86400],
@@ -31,6 +35,10 @@ export default function useTimeAgo(timestamp: number) {
 
     return () => clearInterval(interval)
   }, [timestamp])
+
+  if (!isRelativeTuneFormat) {
+    return formatDate(timestamp)
+  }
 
   const rtf = new Intl.RelativeTimeFormat('es', { style: 'long' })
   const { value, unit } = timeAgo!

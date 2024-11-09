@@ -55,6 +55,7 @@ Firebase offers you 2 database type:
 
 1. **Firestore**, to handle *high* frequent data change in database, increasing complexity in the queries.
 2. **Realtime**, to handle frequent *low* data change in database, keeping data manipulation simple.
+3. **Progressive Enhancement**, as design concept to have a base that works for all devices and it adapts to specific devices with the last version of web functionalities. Their goal is give a better experiences to users that have the tools to get the last versions of the devices.
 
 ## ☄️ Deploy on Vercel
 
