@@ -15,10 +15,10 @@ export function formatDate(timestamp: number, { language = DEFAULT_LANGUAGE} = {
 
   if (!isDateTimeFormatSupported) {
     const options = {
-      weekday: 'short' as 'short',
-      year: 'numeric' as 'numeric',
-      month: 'short' as 'short',
-      day: 'numeric' as 'numeric'
+      weekday: 'short' as const,
+      year: 'numeric' as const,
+      month: 'short' as const,
+      day: 'numeric' as const,
     }
 
     return date.toLocaleDateString(language, options);

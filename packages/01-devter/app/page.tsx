@@ -42,7 +42,7 @@ export default function HomePage() {
       </Head>
 
       <section className={styles.main}>
-        <Logo className={styles.logo} fill="#0070f3" width={120} height={120}/>  
+        <Logo className={styles.logo} width={120} height={120}/>  
         <h1 className={styles.h1}>Devter</h1>
         <h2 className={styles.h2}>Talk about development with developers</h2>
 

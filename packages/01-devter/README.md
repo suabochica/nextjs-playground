@@ -2,6 +2,8 @@
 
 Twitter for developers.
 
+![Devter](public/devter.webp)
+
 ## 🚀 Getting Started
 
 First, run the development server:
@@ -56,6 +58,9 @@ Firebase offers you 2 database type:
 1. **Firestore**, to handle *high* frequent data change in database, increasing complexity in the queries.
 2. **Realtime**, to handle frequent *low* data change in database, keeping data manipulation simple.
 3. **Progressive Enhancement**, as design concept to have a base that works for all devices and it adapts to specific devices with the last version of web functionalities. Their goal is give a better experiences to users that have the tools to get the last versions of the devices.
+4. **Variables Environments**, to handle set ups values for development and production environments via dotfiles. Keep in mind that you can haver 2 types of variables environments, public and private.
+
+![Devtet use case](public/devter.gif)
 
 ## ☄️ Deploy on Vercel
 

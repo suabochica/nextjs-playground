@@ -21,17 +21,19 @@ export default function HomePage() {
   const [timeline, setTimeline] = useState([]); 
   const user = useUser()
 
+
   useEffect(() => {
-    // @ts-expect-error: unsubscribe is any
-    let unsubscribe;
+    let unsubscribe: (() => void) | undefined;
 
     if (user) {
-      unsubscribe = listenLatestDevits(setTimeline)
-    } 
+      // @ts-expect-error unsubscribe is not defined
+      unsubscribe = listenLatestDevits(setTimeline);
+    }
 
-    // @ts-expect-error: unsubscribe is any
-    return () => unsubscribe && unsubscribe()
-  }, [user]);  
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [user])
 
   return (
     <>
