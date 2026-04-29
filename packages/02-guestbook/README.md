@@ -78,6 +78,43 @@ Esta aplicación se compone de:
 - Guestbook: una aplicación frontend en NextJS donde el usuario se registra con GitHub y su visita es guardada en el libro de invitados.
 - Pocketbase: una aplicación backend con una base de datos SQL para almacenar los usuarios que visitan la página. Pocketbase ofrece una interfaz de usuario para el rol de administrador y así administrar los datos.
 
+## Paso 4: Networking y Firewall
+
+Por defecto, los accesos a los servidores remotos son muy limitados para garantizar seguridad. Los accesos utilizan los puertos asociados a protocolos para recibir mensajes esperados. Los siguientes puertos son abiertos para usos externos:
+
+- 80 HTTP Cerrado
+- 443 HTTPS Cerrado
+- 22 SSH Abierto
+- 
+Estos puertos son solo de uso interno, i.e., por el  localhost:
+
+- 3000 Next.js
+- 8090 Pocketbase
+
+Para abrir los puertos es necesario modificar el Firewall. El Firewall es la primera línea de defensa para el tráfico en red y define las reglas sobre cuales puertos están abiertos ó cerrados. En las páginas de los VPS hay opciones para administrar los grupos de firewall, pero una alternativa es la configuración del  **uncomplicated firewall** en el servidor remoto para habilitar los puertos 80 y 443 de los protocolos HTTP y HTTPS respectivamente. Para hacer esta configuración utilizamos NGINX.
+
+## Paso 5: NGINX
+
+Nginx es un servidor web que se puede usar como proxy inverso para enrutar el tráfico hacia aplicaciones web. Para configurar Nginx en nuestro servidor remoto, se ejecutan los siguientes comandos:
+
+```sh
+apt update
+apt install nginx
+systemctl start nginx // enable the service
+systemctl enable nginx // run in background
+systemctl status nginx // check if is runing
+```
+
+El `systemctl` es una utilidad de linux que nos permite prender y apagar servicios en nuestra máquina remota para que corran en un segundo plano. Al intentar navegar hacia `http://your.vps.ip.address` no se va a mostrar nada en esta ruta, y es allí donde la configuración del  **uncomplicated firewall** toma protagonismo con los siguientes comandos:
+
+```sh
+ufw status // see which ports are open
+ufw app list // check what apps are available. Here you should see Nginx.
+ufw allow 'Nginx Full' // add rule to use the Nginx Full
+```
+
+Ahora, al navegar `http://your.vps.ip.address` se verá el mensaje **Welcome to nginx!**.
+
 
 ## 🧰 Tool Kit
 
