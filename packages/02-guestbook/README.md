@@ -116,6 +116,67 @@ ufw allow 'Nginx Full' // add rule to use the Nginx Full
 Ahora, al navegar `http://your.vps.ip.address` se verá el mensaje **Welcome to nginx!**.
 
 
+## Paso 6: Transferencia de código
+
+Al tener disponible tu servidor remoto, es momento de identificar una forma para trasferir el código de tu máquina local a la máquina remota. Existen varias alternativas:
+
+- Copia segura con el comando `scp`. e.g., `scp -r /path/to/local/code root@123.45.67.89:/apps/guestbook`
+- Protocolo FTP para la transferencia de archivo con FileZilla.
+- git y GitHub.
+
+
+En este paso vamos a usar **git**, ya que se puede clonar el repositorio en GitHub a tu máquina remota. git es una tecnología que merece un curso y por ende no se va a desarrollar a profundidad. En caso de no estar familiarizado con ella, se recomienda capacitarse en su uso. Por ahora, solo nos conformaremos con saber que es una estrategia para poner nuestro código en un servidor remoto.
+
+Primero, se va a instalar node.js en la VPS por medio del Node Version Manager (`nvm`) con el siguiente comando:
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+
+Este comando nos instala `nvm`. Para instalar node.js se ejecuta:
+
+```sh
+nvm install 20
+```
+
+Segundo, si usas tu propio código, primero tendrás que enviar tu código a un repositorio remoto en GitHub. Posteriormente podemos clonar el repositorio con el siguiente comando:
+
+```sh
+mkdir apps
+cd apps
+git clone https://github.com/fireship-io/linux-course guestbook
+```
+
+Tercero, instalamos las dependencias de la aplicación, y se ejecuta el build.
+
+```sh
+cd guestbook
+
+npm install
+npm run build
+npm run star
+```
+
+Para validar que el frontend de la aplicación esta montada se puede usar el siguiente comando en otra terminal:
+
+```sh
+curl http://localhost:3000
+```
+
+Ahora vamos a ejecutar el backend de la aplicación en nuestro VPS. Abrimos otra pestaña en la terminal y se corren los siguientes comandos:
+
+```sh
+chmod +x pocketbase
+./pocketbase serve
+```
+
+Para validar, en la consola el funcionamiento del backend, se debe ver en la terminal la siguiente salida:
+
+```txt
+Server started at http://127.0.0.1:8090
+```
+
+
 ## 🧰 Tool Kit
 
 La siguiente lista recopila las tecnologías utilizadas en este proyecto.
