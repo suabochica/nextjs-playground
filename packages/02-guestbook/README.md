@@ -349,6 +349,162 @@ systemctl reload nginx
 
 Ahora al visitar el dominio, se deberá visualizar la webapp.
 
+## Paso 9: Variables de entorno
+
+Nuestra webapp ya esta visible en la VPS, pero su configuración está algo incompleta, ya que si la máquina remota se reinicia, se pierden los valores de las configuraciones que requiere nuestra aplicación
+
+Para tener configuraciones persistentes de información delicada (e.g., llaves para conexión a APIs) en el servidor se usan variables de entorno. En Linux hay varias formas de configurar variables de entorno.
+
+La primera alternativa es configurar la variable de entorno de manera temporal durante la vida de una sesión en el shell:
+
+```sh
+export FOO="bar"
+```
+
+La segunda alternativa es actualizar el `.bashrc` o el `.bash_profile` para definir la variable antes de cada sesión en el shell:
+
+```sh
+nano ~/.bashrc
+export FOO="bar"
+```
+
+La tercera alternativa es definir la variable de entorno de manera permanente en el ambiente del sistema:
+
+```sh
+nano /etc/environment
+export FOO="bar"
+```
+
+Por último esta la alternativa más flexible de todas y es a través de un archivo `.env` en alguno de los directorios de tus proyectos. Esto implica que el proyecto usa una biblioteca como `dotenv` en Node.js para leer el valor. Y es la más flexible porque permite atender el escenario de tener varias aplicaciones en la misma máquina remota.
+
+## Paso 10: systemd
+
+El otro problema que se enfrenta es que si la máquina remota se reinicia, hay que correr manualmente los comandos para levantar la aplicación.
+
+Para automatizar estos comandos, se puede usar el `systemd`. systemd es un conjunto de bloques básicos para el sistema de Linux y provee un administrador de servicios para ejecutar tareas en paralelo al iniciar el sistema.
+
+En ese orden de ideas, vamos a especificar las siguientes 3 tareas:
+
+1. Reinicio automático
+2. Logs personalizados
+3. Establecer variables de entorno
+
+Por defecto, el sistema operativo cuenta con varios archivos definidos en el `systemd` que se corren al arrancar el sistema. Para revisarlos se ejecuta el siguiente comando:
+
+```sh
+ls /etc/systemd/system/
+```
+
+El siguiente paso es agregar un par de servicios en esta carpeta. El primer servicio es para iniciar nuestra aplicación backend. Se usado `nano` para crear el archivo
+
+```sh
+nano /etc/systemd/system/pocketbase.service
+``` 
+
+Luego, agregamos el siguiente contenido:
+
+```txt
+[Unit]
+Description=PocketBase
+
+[Service]
+Type=simple
+User=root
+Group=root
+LimitNOFILE=4096
+Restart=always
+RestartSec=5s
+StandardOutput=append:/var/log/pocketbase.log
+StandardError=append:/var/log/pocketbase.log
+ExecStart=/root/apps/guestbook/pocketbase serve --http="127.0.0.1:8090"
+Environment="NEXT_PUBLIC_POCKETBASE_URL=https://linux.fireship.app/pb"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Como se puede observar, el archivo tiene 3 secciones, `Unit`, `Service` e `Install`. Toda la magia esta en la sección `Service`. Vamos a revisar configuraciones importantes:
+
+```txt
+Restart=always
+RestartSec=5s
+```
+
+Estas líneas especifican que si la máquina remota se reinicia, este servicio también.
+
+```txt
+StandardOutput=append:/var/log/pocketbase.log
+StandardError=append:/var/log/pocketbase.log
+```
+
+Estás lineas registrar errores del servicio en el archivo `/var/log/pocketbase.log`. Dicho archivo se va a crear más adelante.
+
+```txt
+ExecStart=/root/apps/guestbook/pocketbase serve --http="127.0.0.1:8090"
+```
+
+Está línea es la más importante, ya que es la que indica que comando correr para levantar la aplicación backend.
+
+```txt
+Environment="NEXT_PUBLIC_POCKETBASE_URL=https://linux.fireship.app/pb"
+```
+
+En la última linea de la sección de servicios, se define la variable de entorno relevante para la aplicación de Pocketbase.
+
+Es tiempo de crear los archivos que almacenaran los logs, con los respectivos permisos de escritura:
+
+```sh
+touch /var/log/pocketbase.log
+chmod 644 /var/log/pocketbase.log
+```
+
+De manera similar, se crea un servicio para el frontend en el siguiente archivo `/etc/systemd/system/nextjs.service` con el siguiente contenido:
+
+```txt
+[Unit]
+Description=Next.js Application
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+Restart=always
+RestartSec=5s
+WorkingDirectory=/root/apps/guestbook
+ExecStart=/bin/bash -c 'source /root/.nvm/nvm.sh && /root/.nvm/versions/node/v20.15.0/bin/npm start'
+Environment="NODE_ENV=production"
+Environment="NEXT_PUBLIC_POCKETBASE_URL=https://linux.fireship.app/pb"
+
+[Install]
+WantedBy=multi-user.target
+```
+
+La principal diferencia está en el `ExecStart` en donde se especifica el uso puntual de Node.JS.
+
+Por último, con la utilidad `systemctl` se cargan estos servicio. Se ejecuta:
+
+```sh
+systemctl daemon-reload
+```
+
+Para recargar todos los procesos que se van a correr en paralelo al arrancar el sistema. Luego se ejecutan los comandos para iniciar y habilitar los servicios que acabamos de crear:
+
+```sh
+systemctl start pocketbase
+systemctl enable pocketbase
+
+systemctl start nextjs
+systemctl enable nextjs
+```
+
+Y para validar su estado, se usa:
+
+```sh
+systemctl status pocketbase
+systemctl status nextjs
+```
+
 ## 🧰 Tool Kit
 
 La siguiente lista recopila las tecnologías utilizadas en este proyecto.
