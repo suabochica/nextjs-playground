@@ -8,9 +8,9 @@ Un servidor virtual privado es una máquina Linux con alguna dirección IP en el
 
 Opciones Popular VPS Hosting
 
-- Linode
-- Vultr
-- Digital Ocean
+- [Akamai Cloud](https://www.linode.com) (previamente Linode)
+- [Vultr](https://www.vultr.com)
+- [Digital Ocean](https://www.digitalocean.com)
 
 Opciones Big Cloud
 
@@ -82,14 +82,14 @@ Esta aplicación se compone de:
 
 Por defecto, los accesos a los servidores remotos son muy limitados para garantizar seguridad. Los accesos utilizan los puertos asociados a protocolos para recibir mensajes esperados. Los siguientes puertos son abiertos para usos externos:
 
-- 80 HTTP Cerrado
-- 443 HTTPS Cerrado
-- 22 SSH Abierto
+- `80` HTTP Cerrado
+- `443` HTTPS Cerrado
+- `22` SSH Abierto
 - 
 Estos puertos son solo de uso interno, i.e., por el  localhost:
 
-- 3000 Next.js
-- 8090 Pocketbase
+- `3000` Next.js
+- `8090` Pocketbase
 
 Para abrir los puertos es necesario modificar el Firewall. El Firewall es la primera línea de defensa para el tráfico en red y define las reglas sobre cuales puertos están abiertos ó cerrados. En las páginas de los VPS hay opciones para administrar los grupos de firewall, pero una alternativa es la configuración del  **uncomplicated firewall** en el servidor remoto para habilitar los puertos 80 y 443 de los protocolos HTTP y HTTPS respectivamente. Para hacer esta configuración utilizamos NGINX.
 
@@ -213,6 +213,141 @@ nano /etc/ssl/key.pem
 
 De esta forma se tiene el certificado SSL en nuestro servidor remoto.
 
+## Paso 8: Direccionamiento del tráfico HTTP a HTTPS
+
+Ahora para redireccionar todo el tráfico HTTP a HTTPS dado que ya hay certificado SSL hay que modificar el archivo `nginx.conf`. Por defecto, la configuración de este archivo es:
+
+```txt
+server {
+    listen 80;
+    server_name linux.fireship.app;
+    
+    # Redirect HTTP to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+```
+
+Lo cuál significa que todo tráfico por el protocolo HTTPS obtendrá como respuesta un `301 movido permanentemente`, estado que indica que ese recurso se ha movido de manera permanente a una nueva URI, y esta especificada en el encabezado `Location` de la respuesta.
+
+Para habilitar el tráfico a HTTPS se debe agregar la siguientes líneas al `nginx.conf`:
+
+```txt
+server {
+    listen 443 ssl;
+    server_name linux.fireship.app;
+
+    # SSL configuration using Cloudflare certificates
+    ssl_certificate /etc/ssl/cert.pem;
+    ssl_certificate_key /etc/ssl/key.pem;
+
+    # SSL settings (recommended for security)
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+
+    # Next.js application
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # PocketBase API and Admin UI
+    location /pb/ {
+        rewrite ^/pb(/.*)$ $1 break;
+        proxy_pass http://localhost:8090;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+Demasiada información, vamos por partes:
+
+```txt
+    listen 443 ssl;
+    server_name linux.fireship.app;
+
+    # SSL configuration using Cloudflare certificates
+    ssl_certificate /etc/ssl/cert.pem;
+    ssl_certificate_key /etc/ssl/key.pem;
+```
+
+Estás líneas indican que todo el trafico por el puerto `443` que es el puerto correspondiente al protocolo HTTP será abierto con un certificado SSL y se especifican los archivos que se generaron en Cloudefare.
+
+```txt
+    # SSL settings (recommended for security)
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+```
+
+Estás líneas son configuraciones de seguridad a través de algoritmos de cifrado y protocolos. Se puede revisar la sección [Cipher suites](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/cipher-suites/) de Cloudfare para más contexto.
+
+```txt
+    # Next.js application
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # PocketBase API and Admin UI
+    location /pb/ {
+        rewrite ^/pb(/.*)$ $1 break;
+        proxy_pass http://localhost:8090;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+```
+
+Por último, estás lineas son configuraciones sobre nuestras aplicaciones frontend y backend respectivamente. La configuración importante es que cuando el usuario navegue a la raíz `/` sera redirigida a la aplicación Next.js. Al navegar a `/pb` pasará por nuestra aplicación de Pocketbase.
+
+El siguiente paso es contarle a nginx que hubo una actualización en el archivo de configuración. Para ello se ejecuta:
+
+```sh
+nano /etc/nginx/sites-available/guestbook
+```
+
+Y copiamos todo el archivo `nginx.conf` allí.
+
+Luego, se crea el siguiente enlace simbólico, para especificarle a nginx cual és la configuración relevante:
+
+```sh
+ln -s /etc/nginx/sites-available/guestbook /etc/nginx/sites-enabled/
+```
+
+Se borra la configuración por defecto, ya que no se está utilizando:
+
+```sh
+rm /etc/nginx/sites-enabled/default
+```
+
+Validamos que todo esta bien en nginx con el comando:
+
+```sh
+nginx -t
+```
+
+Y por último se recarga el servidor de nginx, para cargar la nueva configuración:
+
+```sh
+systemctl reload nginx
+```
+
+Ahora al visitar el dominio, se deberá visualizar la webapp.
 
 ## 🧰 Tool Kit
 
