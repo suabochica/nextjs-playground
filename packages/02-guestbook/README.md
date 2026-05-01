@@ -176,6 +176,43 @@ Para validar, en la consola el funcionamiento del backend, se debe ver en la ter
 Server started at http://127.0.0.1:8090
 ```
 
+## Paso 7: Secure Sockets Layer (SSL)
+
+Un certificado SSL es un documento digital que autentica la identidad de un sitio web y habilita una conexión cifrada. Es decir, los intercambios entre el cliente y el servidor estarán cifrados, hecho que nos da una garantía en seguridad ya que si un tercero intercepta la comunicación y obtiene la información que se transmite entre el cliente y el servidor, tendrá que descifrarla.
+
+Hoy en día, si tu sitio web no cuenta con este certificado los navegadores compartirán una advertencia al usuario de que su conexión no es privada y estará expuesto a ataques para robar su información.
+
+Los certificados SSL se pueden obtener de diferentes proveedores, algunos pagos y otros gratuitos en sitios como:
+
+- [Let'encrypt](https://letsencrypt.org)
+- [certbot](https://certbot.eff.org)
+- [Cloudfare](https://www.cloudflare.com) ¡Gratuita!
+
+Antes de certificar un sitio web, se debe tener un nombre de dominio para nuestro sitio web. Este se puede obtener en sitios como:
+
+- GoDaddy
+- Namechip
+- Tudominio
+
+Posteriomente, se debe transferir la funcionalidad de DNS a Claudefare siguiendo las instrucciones en su [documentación](https://developers.cloudflare.com/dns/zone-setups/full-setup/setup). De esta forma cuando los registros en el proxy DNS se hacen a través de Cloudefare para validar el certificado SSL y aplicar defense sobre ataques de negación de servicios.
+
+Ahora, puede obtener el certificado SSL creando dicho certificado para el dominio en la sección SSL/TLS como muestra la siguiente imagen:
+
+![Cloudefare - create certificate](images/01-cf-create-certificate.webp)
+
+Una vez diligenciado el formulario, se van a obtener dos valores; **origin certificate** and **public key**.
+
+![Cludefare - origin certificate and public key](images/02-cf-certificate-and-public-key.webp)
+
+Estos valores tienen que ser guardados en la siguiente directorio `/etc/ssl/` con bajo los archivo `cert.pem` y `key.pem` respectivamente. Para copiar el los valores se puede usar el editor de texto `nano`. 
+
+```sh
+nano /etc/ssl/cert.pem
+nano /etc/ssl/key.pem
+```
+
+De esta forma se tiene el certificado SSL en nuestro servidor remoto.
+
 
 ## 🧰 Tool Kit
 
