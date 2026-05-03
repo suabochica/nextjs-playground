@@ -505,6 +505,82 @@ systemctl status pocketbase
 systemctl status nextjs
 ```
 
+## Paso 11: Montar un volumen
+
+Ya se soluciono el inconveniente de retomar las aplicaciones web en caso de que la máquina remota se reinicie. Ahora el problema al que se expone es que todas los configuraciones están montadas en la VPS. Asi mismo, la aplicación maneja datos de usuario que están siendo almacenados dentro del directorio `pb_data`. Este enfoque es válido si manejamos una cantidad pequeña de usuarios, e.g., 100. Si el número de usuarios empieza a crecer, se debe cumplir con el requisito de escalamiento. Típicamente este escenario se maneja con un bloque de almacenamiento externo, servicio que también lo proveen alguna VPS. Es un disco de volumen que puede adjuntar y desadjuntar al servidor remoto.
+
+En Vultr, se administran los almacenamientos en la siguiente sección:
+
+![Vultr - manage storage](images/03-vltr-manage-storage.webp)
+
+Para este caso, se tiene un bloque de almacenamiento que tiene un costo de $2.50/mes.
+
+Estos volúmenes se editan desde el icono del lápiz, como muestra la siguiente imagen:
+
+![Vultr - edit storage](images/04-vltr-edit-storage.webp)
+
+Ahora es tiempo de adjuntarlo al VPS. Para ello usamos el siguiente comando:
+
+```sh
+lsblk
+``` 
+
+Este comando permite listar la información sobre todos los dispositivos bloques, tales como discos duros y particiones. Su salida es algo como:
+
+```txt
+NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda           8:0    0 698.6G  0 disk
+├─sda1        8:1    0   200M  0 part
+└─sda2        8:2    0 698.4G  0 part
+sdb           8:16   0 465.8G  0 disk
+```
+
+Para crear el volumen en el sistema de archivo, se usa el siguiente comando:
+
+```sh
+mkfs.ext4 /dev/vdb
+```
+
+Es importante tener en cuenta que este comando no debe ejecutarse sobre un volumen ya existente, puesto que sobreescribirá la información que se tenga almacenada allí. Una vez creado en volument en el sistema de archivos, se debe especificar un directorio en donde va a montarse. Para ello se ejecuta el siguiente comando:
+
+```sh
+mkdir -p /mnt/blockstorage/pb_data
+```
+
+Luego conectamos el volumen al árbol del sistema de archivos con el siguiente comando:
+
+```sh
+mount /dev/vdb /mnt/blockstorage
+```
+
+Se otorgan los respectivos permisos:
+
+```sh
+chmod -R 755 /mnt/blockstorage/pb_data
+```
+
+El siguiente comando es para montar el volumen en casos de que el sistema se reinicie:
+
+```sh
+echo "/dev/vdb /mnt/blockstorage ext4 defaults,nofail 0 0" | sudo tee -a /etc/fstab
+```
+
+Con este volumen externo, es necesario actualizar el `/etc/systemd/system/pocketbase.service`, para  reemplazar el directorio `default` por `/mnt/blockstorage/pb_data`, cambiando la siguiente línea:
+
+```txt
+ExecStart=/root/apps/guestbook/pocketbase serve --http="127.0.0.1:8090" --dir='/mnt/blockstorage/pb_data'
+```
+
+Para que estos cambios tengan efecto, hay que correr los comandos para reiniciar los controladores del sistema:
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl restart pocketbase
+sudo systemctl restart nextjs
+```
+
+Con estas configuraciones, la aplicación web ya esta en capacidad de escalar a miles de usuarios.
+
 ## 🧰 Tool Kit
 
 La siguiente lista recopila las tecnologías utilizadas en este proyecto.
