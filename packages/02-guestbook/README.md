@@ -581,6 +581,30 @@ sudo systemctl restart nextjs
 
 Con estas configuraciones, la aplicación web ya esta en capacidad de escalar a miles de usuarios.
 
+## Consideraciones finales
+
+Para hacer nuestra aplicación web mas robusta, se comparte una lista de los puntos a complementar en este ejercicio.
+
+**Ataques de denegación de servicio**.Aquí el atacante sobrecarga tu servidor con multiples peticiones. Cloudflare ofrece buenas alternativas para mitigar estos ataques, ya que por defecto algunos VPS autoescalan tu VPS incrementando de manera esperada los costos de hospedaje del servidor. Un mecanismo de defensa es negar el accesos a ciertos rangos de IPs.
+
+
+**Problemas de rendimiento**. Para evitar demoras en tiempos de respuestas se pueden revisar estrategias y mecanismos de caching, usos del servicio Content Delivery Network (CDN) y bases de datos en volúmenes externos.
+
+Para el caching, una estrategia común es replicar una base de datos relacional en una base de datos llave de valor en memoria como Redis. De este forma, primero se revisa si la información solicitada esta en el caché, en caso de estar, se retorna. De no estar se hace el llamado a la base de datos persistente y se registra la información en la memoria caché.
+
+**Escalamiento**. Por defecto, este atributo maneja incrementos en CPU/RAM por VPS de forma automática, pero dichos manejos implican costos adicionales no controlados en el uso del servidor remoto. Este tipo de escalamiento se conoce como *escalamientos vertical*. El *escalamiento horizontal*, consiste en habilitar replicas de nuestro servidor en contenedores a través de Docker. En palabras cortas, Docker permite tomar todas las configuraciones del servidor remoto y especificarlo en un archivo `Dockerfile`, el cuál permite crear una imagen de Docker que puede ejecutarse en un contenedor para ser montado un sin número de veces en un sin número de servidores.
+
+**Herramientas de automatización**. Si en la VPS se ejecutar múltiples webapps, es conveniente usar una herramienta como [Coolify](https://coolify.io), en donde de manera intuitiva podemos asociar despliegues a commits en el repositorio GitHub de las aplicaciones web.
+
+**Recuperación de desastres**. La mayoría de los VPS ofrece estrategias de backups sobre los estados del servidor. En cuanto a la base de datos, es obligatorio tener un mecanismo de respaldo sobre la misma. Algunos proveedores como Pocketbase ofrecen el servicio de agendar respaldos sobre la base de datos. Estas estrategias no nos eximen del problema que nos enfrentamos si nuestro proveedor decide terminar las cuentas de sus usuarios. Para mitigar este escenario, hay herramientas como [Ansible](https://docs.ansible.com), que por medio de un archivo YAML se especifican tareas descriptivas sobre las configuraciones que debemos correr para que puedan aplicarse en cualquier VPS.  
+
+
+- Sending email.
+- Coolify
+- Logging/Monoitoring
+- Backups. Disaster recovery plan. Ansible
+- Deploying with SST
+
 ## 🧰 Tool Kit
 
 La siguiente lista recopila las tecnologías utilizadas en este proyecto.
