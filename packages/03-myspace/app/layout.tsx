@@ -1,11 +1,9 @@
-import "./globals.css";
-
-import NavMenu from "@/app/NavMenu";
-
 import { Open_Sans } from "next/font/google";
 import Link from "next/link";
 
+import "@/app/globals.css";
 import AuthProvider from "@/app/AuthProvider";
+import NavMenu from "@/app/NavMenu";
 
 const myFont = Open_Sans({ weight: "400", subsets: ["latin"] });
 
@@ -52,6 +50,7 @@ export default function RootLayout({ children }: Props) {
                 <li>
                   <Link href={"https://nextjs.org"}>NextJS Docs</Link>
                 </li>
+                
               </ul>
             </footer>
           </div>
