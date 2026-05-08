@@ -1,16 +1,8 @@
-export const revalidate = 1200; // not necessary, just for ISR demonstration
+import { posts } from '@/lib/data';
 
-interface Post {
-  title: string;
-  content: string;
-  slug: string;
-}
+export const revalidate = 1200;
 
 export async function generateStaticParams() {
-  const posts: Post[] = await fetch('http://localhost:3000/api/content').then(
-    (res) => res.json()
-  );
-
   return posts.map((post) => ({
     slug: post.slug,
   }));
@@ -22,10 +14,6 @@ interface Props {
 
 export default async function BlogPostPage(props: Props) {
   const params = await props.params;
-  // deduped
-  const posts: Post[] = await fetch('http://localhost:3000/api/content').then(
-    (res) => res.json()
-  );
   const post = posts.find((post) => post.slug === params.slug)!;
 
   return (

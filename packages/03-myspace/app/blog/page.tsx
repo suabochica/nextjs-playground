@@ -1,9 +1,7 @@
 import Link from 'next/link';
+import { posts } from '@/lib/data';
 
-export default async function Blog() {
-  const posts = await fetch('http://localhost:3000/api/content').then((res) =>
-    res.json()
-  );
+export default function Blog() {
   return (
     <div>
       <h1>Welcome to our Blog</h1>
